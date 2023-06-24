@@ -28,5 +28,3 @@ func main() {
 		fmt.Printf("- %s ($%.2f)\n", product.Name, product.Price)
 	}
 }
-
-// test test
