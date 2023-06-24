@@ -1,0 +1,18 @@
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - go build -o ecommerce-app
+
+unit_test:
+  stage: test
+  script:
+    - go test ./...
+
+integration_test:
+  stage: test
+  script:
+    - go test
