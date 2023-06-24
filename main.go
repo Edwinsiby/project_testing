@@ -4,9 +4,12 @@ import (
 	"fmt"
 
 	"test/ecommerce"
+	"test/repository"
 )
 
 func main() {
+	repository.ConnectDB()
+
 	cart := ecommerce.NewCart()
 	productManager := ecommerce.NewProductManager()
 
@@ -26,5 +29,19 @@ func main() {
 	fmt.Println("\nAvailable Products:")
 	for _, product := range products {
 		fmt.Printf("- %s ($%.2f)\n", product.Name, product.Price)
+	}
+
+	err := ecommerce.NewUserManager().Signup("Edwin", "pass@123")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("user created")
+	}
+
+	err = ecommerce.NewUserManager().Login("Edwin", "pass@123")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("user logedin")
 	}
 }

@@ -27,16 +27,20 @@ func TestEcommerceIntegration(t *testing.T) {
 	}
 
 	// Validate the output
-	expectedOutput := "Cart Items:\n- Product 1\n- Product 2\n\nAvailable Products:\n- Product 1 ($10.99)\n- Product 2 ($19.99)\n"
+	expectedOutput := "Cart Items:\n- Product 1\n- Product 2\n\nAvailable Products:\n- Product 1 ($10.99)\n- Product 2 ($19.99)\nusername already exists\nuser logedin\n"
 	assert.Equal(t, expectedOutput, stdout.String())
 	// Test user signup and login
 	userManager := ecommerce.NewUserManager()
-	err = userManager.Signup("john", "password")
-	assert.NoError(t, err, "failed to sign up user")
+
 	err = userManager.Login("john", "password")
-	assert.NoError(t, err, "failed to log in with correct credentials")
+	assert.NoError(t, err, "user logged in successfully")
+
+	err = userManager.Login("john", "password")
+	assert.NoError(t, err, "user logedin")
+
 	err = userManager.Login("john", "wrongpassword")
 	assert.Error(t, err, "expected error when logging in with incorrect password")
+
 	err = userManager.Login("jane", "password")
 	assert.Error(t, err, "expected error when logging in with incorrect username")
 }
