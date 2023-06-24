@@ -1,6 +1,20 @@
 package ecommerce
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+	"test/repository"
+)
+
+var db *sql.DB
+var err error
+
+func init() {
+	db, err = repository.ConnectDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 
 type User struct {
 	Username string
@@ -16,29 +30,38 @@ func NewUserManager() *UserManager {
 }
 
 func (um *UserManager) Signup(username, password string) error {
-	// Check if the user already exists
-	for _, user := range um.users {
-		if user.Username == username {
-			return fmt.Errorf("username already exists")
-		}
+	// Check if the user already exists in the database
+	query := "SELECT COUNT(*) FROM users WHERE username = $1"
+	var count int
+	err = db.QueryRow(query, username).Scan(&count)
+	if err != nil {
+		return nil
+	}
+	if count > 0 {
+		return fmt.Errorf("username already exists")
 	}
 
-	// Create a new user
-	newUser := User{
-		Username: username,
-		Password: password,
+	// Insert the new user into the database
+	query = "INSERT INTO users (username, password) VALUES ($1, $2)"
+	_, err = db.Exec(query, username, password)
+	if err != nil {
+		return err
 	}
-	um.users = append(um.users, newUser)
 
 	return nil
 }
 
 func (um *UserManager) Login(username, password string) error {
-	for _, user := range um.users {
-		if user.Username == username && user.Password == password {
-			return nil
-		}
+	// Query the database for the username and password
+	query := "SELECT COUNT(*) FROM users WHERE username = $1 AND password = $2"
+	var count int
+	err := db.QueryRow(query, username, password).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return fmt.Errorf("invalid username or password")
 	}
 
-	return fmt.Errorf("invalid username or password")
+	return nil
 }

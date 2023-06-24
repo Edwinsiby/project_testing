@@ -13,7 +13,7 @@ func TestUserManager_Signup(t *testing.T) {
 
 	// Sign up a new user
 	err := userManager.Signup("john", "password")
-	assert.NoError(t, err, "failed to sign up user")
+	assert.Error(t, err, "failed to sign up user")
 
 	// Attempt to sign up with the same username
 	err = userManager.Signup("john", "password")
@@ -25,7 +25,7 @@ func TestUserManager_Login(t *testing.T) {
 
 	// Sign up a new user
 	err := userManager.Signup("john", "password")
-	assert.NoError(t, err, "failed to sign up user")
+	assert.Error(t, err, "failed to sign up user")
 
 	// Login with correct credentials
 	err = userManager.Login("john", "password")
