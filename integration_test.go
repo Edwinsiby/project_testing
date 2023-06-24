@@ -2,7 +2,6 @@ package main_test
 
 import (
 	"bytes"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"test/ecommerce"
@@ -17,10 +16,15 @@ func TestEcommerceIntegration(t *testing.T) {
 
 	// Run the application and capture the output
 	cmd := exec.Command(appPath)
-	var stdout bytes.Buffer
+	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 	err := cmd.Run()
-	assert.NoError(t, err, "failed to run the application")
+	if err != nil {
+		t.Errorf("Failed to run the application: %v", err)
+		t.Logf("Stdout: %s", stdout.String())
+		t.Logf("Stderr: %s", stderr.String())
+	}
 
 	// Validate the output
 	expectedOutput := "Cart Items:\n- Product 1\n- Product 2\n\nAvailable Products:\n- Product 1 ($10.99)\n- Product 2 ($19.99)\n"
@@ -38,13 +42,11 @@ func TestEcommerceIntegration(t *testing.T) {
 }
 
 func buildApplication(t *testing.T) string {
-	// Get the current directory
-	cwd, err := os.Getwd()
-	assert.NoError(t, err, "failed to get current directory")
+	appPath, err := filepath.Abs("test")
+	assert.NoError(t, err, "failed to get absolute path")
 
 	// Build the application
-	appPath := filepath.Join(cwd, "ecommerce")
-	cmd := exec.Command("go", "build", "-o", appPath, "./ecommerce/main.go")
+	cmd := exec.Command("go", "build", "-o", appPath, ".")
 	err = cmd.Run()
 	assert.NoError(t, err, "failed to build the application")
 
