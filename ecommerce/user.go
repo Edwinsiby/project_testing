@@ -8,11 +8,17 @@ import (
 
 var db *sql.DB
 var err error
+var ok bool
 
 func init() {
-	db, err = repository.ConnectDB()
+	dbInterface, err := repository.ConnectDB()
 	if err != nil {
 		fmt.Println(err)
+	}
+
+	db, ok = dbInterface.(*sql.DB)
+	if !ok {
+		fmt.Println("Failed to perform type assertion")
 	}
 }
 
@@ -52,7 +58,7 @@ func (um *UserManager) Signup(username, password string) error {
 func (um *UserManager) Login(username, password string) error {
 	query := "SELECT COUNT(*) FROM users WHERE username = $1 AND password = $2"
 	var count int
-	err := db.QueryRow(query, username, password).Scan(&count)
+	err = db.QueryRow(query, username, password).Scan(&count)
 	if err != nil {
 		return err
 	}
