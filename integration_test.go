@@ -11,10 +11,8 @@ import (
 )
 
 func TestEcommerceIntegration(t *testing.T) {
-	// Build the application
 	appPath := buildApplication(t)
 
-	// Run the application and capture the output
 	cmd := exec.Command(appPath)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -26,10 +24,8 @@ func TestEcommerceIntegration(t *testing.T) {
 		t.Logf("Stderr: %s", stderr.String())
 	}
 
-	// Validate the output
 	expectedOutput := "Cart Items:\n- Product 1\n- Product 2\n\nAvailable Products:\n- Product 1 ($10.99)\n- Product 2 ($19.99)\nusername already exists\nuser logedin\n"
 	assert.Equal(t, expectedOutput, stdout.String())
-	// Test user signup and login
 	userManager := ecommerce.NewUserManager()
 
 	err = userManager.Login("john", "password")
