@@ -12,6 +12,8 @@ func main() {
 
 	router.POST("/usersignup", handlers.Signup)
 	router.GET("/userlogin", handlers.Login)
+	router.POST("/addproduct", handlers.AddProduct)
+	router.GET("/listproducts", handlers.ListProducts)
 
 	router.Run(":8085")
 

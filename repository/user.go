@@ -3,25 +3,30 @@ package repository
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"test/domain"
 )
 
-var db *sql.DB
 var err error
 
+type Repository struct {
+	db *sql.DB
+}
+
+var repo Repository
+
 func init() {
-	db, err = ConnectDB()
+	db, err := ConnectDB()
 	if err != nil {
 		log.Fatal(err)
 	}
+	repo.db = db
 }
 
 func GetByName(user domain.User) error {
 	query := "SELECT COUNT(*) FROM users WHERE username = $1"
 	var count int
-	err = db.QueryRow(query, user.UserName).Scan(&count)
+	err = repo.db.QueryRow(query, user.UserName).Scan(&count)
 	if err != nil {
 		return err
 	}
@@ -33,7 +38,7 @@ func GetByName(user domain.User) error {
 
 func CreateUser(user domain.User) error {
 	query := "INSERT INTO users (username, password) VALUES ($1, $2)"
-	_, err = db.Exec(query, user.UserName, user.Password)
+	_, err = repo.db.Exec(query, user.UserName, user.Password)
 	if err != nil {
 		return err
 	} else {
@@ -45,13 +50,22 @@ func CreateUser(user domain.User) error {
 func Login(user domain.User) error {
 	query := "SELECT COUNT(*) FROM users WHERE username = $1 AND password = $2"
 	var count int
-	err = db.QueryRow(query, user.UserName, user.Password).Scan(&count)
+	err = repo.db.QueryRow(query, user.UserName, user.Password).Scan(&count)
 	if err != nil {
 		return err
 	}
 	if count == 0 {
-		return fmt.Errorf("invalid username or password")
+		return errors.New("invalid username or password")
 	}
 
+	return nil
+}
+
+func DeleteUser(user domain.User) error {
+	query := "DELETE FROM users WHERE username = $1"
+	_, err := repo.db.Exec(query, user.UserName)
+	if err != nil {
+		return err
+	}
 	return nil
 }
