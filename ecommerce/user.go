@@ -30,7 +30,6 @@ func NewUserManager() *UserManager {
 }
 
 func (um *UserManager) Signup(username, password string) error {
-	// Check if the user already exists in the database
 	query := "SELECT COUNT(*) FROM users WHERE username = $1"
 	var count int
 	err = db.QueryRow(query, username).Scan(&count)
@@ -41,7 +40,6 @@ func (um *UserManager) Signup(username, password string) error {
 		return fmt.Errorf("username already exists")
 	}
 
-	// Insert the new user into the database
 	query = "INSERT INTO users (username, password) VALUES ($1, $2)"
 	_, err = db.Exec(query, username, password)
 	if err != nil {
@@ -52,7 +50,6 @@ func (um *UserManager) Signup(username, password string) error {
 }
 
 func (um *UserManager) Login(username, password string) error {
-	// Query the database for the username and password
 	query := "SELECT COUNT(*) FROM users WHERE username = $1 AND password = $2"
 	var count int
 	err := db.QueryRow(query, username, password).Scan(&count)
