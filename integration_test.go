@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"bytes"
+	"database/sql"
 	"os/exec"
 	"path/filepath"
 	"test/ecommerce"
@@ -9,6 +10,17 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
+var testDB *sql.DB
+var err error
+var userManager *ecommerce.UserManager
+
+// func init() {
+// 	testDB, err = mocks.ConnectTestDb()
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// }
 
 func TestEcommerceIntegration(t *testing.T) {
 	appPath := buildApplication(t)
@@ -26,7 +38,6 @@ func TestEcommerceIntegration(t *testing.T) {
 
 	expectedOutput := "Cart Items:\n- Product 1\n- Product 2\n\nAvailable Products:\n- Product 1 ($10.99)\n- Product 2 ($19.99)\nusername already exists\nuser logedin\n"
 	assert.Equal(t, expectedOutput, stdout.String())
-	userManager := ecommerce.NewUserManager()
 
 	err = userManager.Login("john", "password")
 	assert.NoError(t, err, "user logged in successfully")
@@ -45,7 +56,6 @@ func buildApplication(t *testing.T) string {
 	appPath, err := filepath.Abs("test")
 	assert.NoError(t, err, "failed to get absolute path")
 
-	// Build the application
 	cmd := exec.Command("go", "build", "-o", appPath, ".")
 	err = cmd.Run()
 	assert.NoError(t, err, "failed to build the application")
