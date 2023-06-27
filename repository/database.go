@@ -15,9 +15,9 @@ func ConnectDB() (*sql.DB, error) {
 }
 
 func ConnectTestDB() (*sql.DB, error) {
-	testDB, err := sql.Open("postgres", "host=localhost port=5432 user=edwin password=acid dbname=test_databse sslmode=disable")
+	db, err := sql.Open("mysql", "root@/blog")
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	return testDB, nil
+	return db, nil
 }
