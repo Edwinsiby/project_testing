@@ -14,10 +14,13 @@ func ConnectDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func ConnectTestDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "root@/blog")
-	if err != nil {
-		panic(err)
-	}
-	return db, nil
-}
+// func ConnectTestDB(t *testing.T) (*sql.DB, error) {
+
+// 	db, mock, err := sqlmock.New()
+// 	if err != nil {
+// 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+// 	}
+// 	defer db.Close()
+
+// 	return db, nil
+// }
