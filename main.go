@@ -15,6 +15,6 @@ func main() {
 	router.POST("/addproduct", handlers.AddProduct)
 	router.GET("/listproducts", handlers.ListProducts)
 
-	router.Run(":8085")
+	router.Run(":8080")
 
 }
