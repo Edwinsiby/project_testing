@@ -9,7 +9,7 @@ import (
 func main() {
 
 	router := gin.Default()
-
+	router.GET("/hi", handlers.Hi)
 	router.POST("/usersignup", handlers.Signup)
 	router.GET("/userlogin", handlers.Login)
 	router.POST("/addproduct", handlers.AddProduct)
