@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func Hi(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"Hi": "Yes it seems good"})
+}
+
 func Signup(c *gin.Context) {
 	var input domain.User
 	if err := c.ShouldBindJSON(&input); err != nil {
