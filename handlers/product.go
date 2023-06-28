@@ -8,40 +8,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var productRepo repository.ProductRepository
-
-func SetProductRepository(repo repository.ProductRepository) {
-	productRepo = repo
-}
-
 func AddProduct(c *gin.Context) {
 	var input domain.Product
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
 	}
 
-	err := productRepo.GetProductByName(input)
+	err := repository.GetProductByName(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = productRepo.CreateProduct(input)
+	err = repository.CreateProduct(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "creating product failed"})
 		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{"success": "product created succesfuly"})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": "product created successfully"})
 }
 
 func ListProducts(c *gin.Context) {
-	products, err := productRepo.GetAllProduct()
+	products, err := repository.GetAllProduct()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{"Products": products})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Products": products})
 }
