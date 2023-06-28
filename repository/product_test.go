@@ -1,4 +1,4 @@
-package test
+package repository_test
 
 import (
 	"test/domain"
@@ -48,7 +48,7 @@ func TestAddProduct(t *testing.T) {
 	mockRepo.On("CreateProduct", testProduct).Return(nil)
 	mockRepo.On("DeleteProduct", testProduct).Return(nil)
 
-	repository.SetProductRepository(mockRepo)
+	SetProductRepository(mockRepo)
 
 	err := repository.GetProductByName(testProduct)
 	assert.NoError(t, err, "Expected no error")
