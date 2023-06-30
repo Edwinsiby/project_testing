@@ -14,6 +14,9 @@ func ConnectDB() (*sql.DB, error) {
 	return db, nil
 }
 
+// "postgres", "host=sample_project port=5432 user=edwin password=acid dbname=sample_project sslmode=disable"
+// "postgres", "host=localhost port=5432 user=edwin password=acid dbname=sample_project sslmode=disable"
+
 // func ConnectTestDB(t *testing.T) (*sql.DB, error) {
 
 // 	db, mock, err := sqlmock.New()
