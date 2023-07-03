@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-testing-deployment
+  labels:
+    app: project-testing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-testing
+  template:
+    metadata:
+      labels:
+        app: project-testing
+    spec:
+      containers:
+        - name: project-testing
+          image: project_testing
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB
+              value: "postgres"
+            - name: DNS
+              value: "host=postgres port=5432 user=edwin password=acid dbname=sample_project sslmode=disable"
+      networks:
+        - name: project-network
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-testing-service
+spec:
+  selector:
+    app: project-testing
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "acid"
+      networks:
+        - name: project-network
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: project-testing-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: project-testing-service
+                port:
+                  number: 8080
