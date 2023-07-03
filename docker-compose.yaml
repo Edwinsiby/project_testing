@@ -1,0 +1,23 @@
+version: '3'
+services:
+  project_testing:
+    image: project_testing
+    ports:
+      - 8080:8080
+    environment:
+      - DB=postgres
+      - DNS=host=postgres port=5432 user=edwin password=acid dbname=sample_project sslmode=disable
+    networks:
+      - project-network
+
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=acid
+    networks:
+      - project-network
+
+networks:
+  project-network:
