@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: project-testing
-          image: project_testing
+          image: edwinsiby/project_testing
           ports:
             - containerPort: 8080
           env:
