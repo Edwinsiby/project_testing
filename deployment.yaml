@@ -24,8 +24,6 @@ spec:
               value: "postgres"
             - name: DNS
               value: "host=postgres port=5432 user=edwin password=acid dbname=sample_project sslmode=disable"
-      networks:
-        - name: project-network
 
 ---
 
@@ -68,8 +66,6 @@ spec:
           env:
             - name: POSTGRES_PASSWORD
               value: "acid"
-      networks:
-        - name: project-network
 
 ---
 
